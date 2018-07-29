@@ -1,7 +1,8 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+books_sold_count -- общее к-во проданных книг или только этого издателя?
+uuid?
+destroy shop_books if count == 0
 
 Things you may want to cover:
 

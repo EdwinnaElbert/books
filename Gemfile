@@ -15,12 +15,13 @@ gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
-  gem "database_cleaner"
-  gem "factory_bot_rails"
-  gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
-  gem "rspec-rails", "~> 3.7"
-  gem "rswag-specs"
+  gem 'database_cleaner'
+  gem 'factory_bot_rails'
+  gem 'faker', git: 'https://github.com/stympy/faker.git', branch: 'master'
   gem 'pry-rails'
+  gem 'rspec-rails', '~> 3.7'
+  gem 'rswag-specs'
+  gem 'shoulda-matchers', '~> 3.1'
 end
 
 group :development do
