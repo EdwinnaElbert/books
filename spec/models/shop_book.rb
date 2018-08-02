@@ -14,6 +14,7 @@ RSpec.describe ShopBook, type: :model do
 
   describe 'Validations' do
     it { should validate_presence_of(:count) }
+    it { should validate_presence_of(:sold_count) }
     it { should validate_presence_of(:shop_id) }
     it { should validate_presence_of(:book_id) }
   end
