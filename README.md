@@ -1,8 +1,6 @@
-# README
+https://fathomless-plateau-39322.herokuapp.com/publishers/1/shops
 
-books_sold_count -- order_by ASC or DESC?
-uuid?
-destroy shop_books if count == 0
+# README
 
 Things you may want to cover:
 
