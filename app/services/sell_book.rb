@@ -8,13 +8,13 @@ class SellBook
 
   def sell
     if @count > @shop_book.count
-      { json: "There are only #{@shop_book.count} books left in stock", status: 500 }
+      { status: 500, json: { errors: [{ code: 500, title: "There are only #{@shop_book.count} books left in stock" }] } }
     elsif @shop_book
       @shop_book.update_attributes(sold_count: (@shop_book.sold_count += @count),
                                    count: (@shop_book.count -= @count))
       { json: @shop_book, status: 200 }
     else
-      { json: 'No such book', status: 500 }
+      { status: 404, json: { errors: [{ code: 404, title: 'No such book in the shop' }] } }
     end
   end
 end

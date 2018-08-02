@@ -5,7 +5,8 @@ class ShopsController < ApplicationController
 
   def sell_books
     return render status: 404, json: { errors: [{ code: 404, title: 'Book not found' }] } if set_book.nil?
-    render json: SellBook.new(@book.id, @shop.id, book_params[:count]).sell
+
+    render SellBook.new(@book.id, @shop.id, book_params[:count]).sell
   end
 
   protected
