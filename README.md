@@ -1,6 +1,6 @@
 # README
 
-books_sold_count -- общее к-во проданных книг или только этого издателя?
+books_sold_count -- order_by ASC or DESC?
 uuid?
 destroy shop_books if count == 0
 

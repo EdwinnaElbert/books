@@ -4,30 +4,30 @@ require 'swagger_helper'
 
 describe 'Books on Sale for Publisher' do
   let!(:publisher)    { FactoryBot.create :publisher }
-  let!(:publisher_1)  { FactoryBot.create :publisher }
+
 
   let!(:book)         { FactoryBot.create :book, publisher: publisher }
   let!(:book_1)       { FactoryBot.create :book, publisher: publisher }
   let!(:book_2)       { FactoryBot.create :book, publisher: publisher }
-  let!(:book_3)       { FactoryBot.create :book, publisher: publisher_1 }
-
 
   let!(:shop)         { FactoryBot.create :shop }
   let!(:shop_1)       { FactoryBot.create :shop }
-  let!(:shop_book)    { FactoryBot.create :shop_book, book: book, shop: shop, count: 2, sold_count: 1 }
+
   let!(:shop_book_4)  { FactoryBot.create :shop_book, book: book_1, shop: shop_1, count: 2, sold_count: 1 }
-  # let!(:shop_book_1)  { FactoryBot.create :shop_book, book: book_1, shop: shop_1, count: 5, sold_count: 0 }
+
+  let!(:shop_book)    { FactoryBot.create :shop_book, book: book, shop: shop, count: 2, sold_count: 1 }
   let!(:shop_book_2)  { FactoryBot.create :shop_book, book: book_2, shop: shop, count: 3, sold_count: 2 }
+
+  let!(:publisher_1)  { FactoryBot.create :publisher }
+  let!(:book_3)       { FactoryBot.create :book, publisher: publisher_1 }
   let!(:shop_book_3)  { FactoryBot.create :shop_book, book: book_3, shop: shop, count: 3, sold_count: 10 }
+
 
   path '/publishers/{publisher_id}/shops' do
     get 'Get shops' do
       tags 'Shops'
       security [bearerAuth: {}]
       consumes 'application/json'
-      # parameter title: :shop_id, in: :path, type: :string
-      # parameter title: :id, in: :path, type: :string
-      # Green
       response '200', 'Get shops' do
         schema type: :object,
           required:  [:data],
@@ -59,10 +59,42 @@ describe 'Books on Sale for Publisher' do
           headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
           get "/publishers/#{publisher.id}/shops", headers: headers
           expect(response).to have_http_status(200)
-          # expect(JSON.parse(response.body)['data']['stock']['id']).to eq(stock.id)
-          # expect(JSON.parse(response.body)['data']['stock']['title']).to eq(stock.title)
-          # expect(JSON.parse(response.body)['data']['stock']['shop_id']).to eq(shop.id)
-          puts JSON.parse(response.body)
+          result = JSON.parse(JSON.parse(response.body)['shops'])
+          # check ordered_by
+          expect(result[0]['id']).to eq(shop.id)
+          expect(result[1]['id']).to eq(shop_1.id)
+
+          # check book presence
+          expect(result[0]['books_in_stock'][0]['book_id']).to eq(book.id)
+          expect(result[0]['books_in_stock'][1]['book_id']).to eq(book_2.id)
+
+          expect(result[1]['books_in_stock'][0]['book_id']).to eq(book_1.id)
+
+          # check sold_count
+          expect(result[0]['books_sold_count']).to eq(3)
+          expect(result[1]['books_sold_count']).to eq(1)
+        end
+      end
+
+      response 'status 404', 'Publisher not found' do
+        schema type: :object,
+               required: [:errors],
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       code: { type: :integer }
+                     }
+                   }
+
+                 }
+               }
+        it 'has 404 status code if publisher not found' do
+          headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+          get "/publishers/#{SecureRandom.uuid}/shops", headers: headers
+          expect(response).to have_http_status(404)
         end
       end
     end
